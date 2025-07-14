@@ -12,6 +12,8 @@ class XMolecularEntityClassifier(Classifier):
 
     def classify(self, mol_list):
         res = []
+        if not isinstance(mol_list, list):
+            mol_list = [mol_list]
         for mol in mol_list:
             res.append([self.element_class_mapping[element_num] for element_num in
                         list(set([atom.GetAtomicNum() for atom in mol.GetAtoms() if atom.GetAtomicNum() > 0]))
@@ -42,6 +44,8 @@ class OrganoXCompoundClassifier(Classifier):
 
     def classify(self, mol_list):
         res = []
+        if not isinstance(mol_list, list):
+            mol_list = [mol_list]
         for mol in mol_list:
             res.append([self.element_class_mapping[element_num] for element_num in
                         list(set([atom.GetAtomicNum() for atom in mol.GetAtoms()
