@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chemlog-extra"
+version = "0.1.0"
+description = "Extension of ChemLog to a broad range of ChEBI classes"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "sfluegel05", email = "simon.fluegel@uni-osnabrueck.de"},
+]
+dependencies = [
+    "chemlog",
+]
+
+[tool.setuptools]
+packages = ["chemlog_extra"]
