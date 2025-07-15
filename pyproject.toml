@@ -7,7 +7,7 @@ name = "chemlog-extra"
 version = "0.1.0"
 description = "Extension of ChemLog to a broad range of ChEBI classes"
 readme = "README.md"
-license = {file = "LICENSE"}
+license-files = ["LICENSE"]
 authors = [
     {name = "sfluegel05", email = "simon.fluegel@uni-osnabrueck.de"},
 ]
@@ -15,5 +15,6 @@ dependencies = [
     "chemlog",
 ]
 
-[tool.setuptools]
-packages = ["chemlog_extra"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["chemlog_extra*"]
