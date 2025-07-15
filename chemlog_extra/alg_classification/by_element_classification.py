@@ -15,9 +15,8 @@ class XMolecularEntityClassifier(Classifier):
         if not isinstance(mol_list, list):
             mol_list = [mol_list]
         for mol in mol_list:
-            res.append([self.element_class_mapping[element_num] for element_num in
-                        list(set([atom.GetAtomicNum() for atom in mol.GetAtoms() if atom.GetAtomicNum() > 0]))
-                        if element_num in self.element_class_mapping])
+            res.append({cls: element_num in list(set([atom.GetAtomicNum() for atom in mol.GetAtoms() if atom.GetAtomicNum() > 0]))
+                        for element_num, cls in self.element_class_mapping.items()})
         return res
 
     def build_class_element_mapping(self, chebi_version: int = 241):
@@ -31,7 +30,7 @@ class XMolecularEntityClassifier(Classifier):
                     if element_name == "organic":
                         element_name = "carbon"
                     if element_name in element_name_to_num:
-                        element_class_mapping[element_name_to_num[element_name]] = chebi_id
+                        element_class_mapping[element_name_to_num[element_name]] = str(chebi_id)
         return element_class_mapping
 
 
@@ -47,10 +46,12 @@ class OrganoXCompoundClassifier(Classifier):
         if not isinstance(mol_list, list):
             mol_list = [mol_list]
         for mol in mol_list:
-            res.append([self.element_class_mapping[element_num] for element_num in
-                        list(set([atom.GetAtomicNum() for atom in mol.GetAtoms()
+            if not mol:
+                res.append({})
+                continue
+            res.append({cls: element_num in list(set([atom.GetAtomicNum() for atom in mol.GetAtoms()
                                   if any(n.GetAtomicNum() == 6 for n in atom.GetNeighbors())]))
-                        if element_num in self.element_class_mapping])
+                        for element_num, cls in self.element_class_mapping.items()})
         return res
 
     def build_class_element_mapping(self, chebi_version: int = 241):
@@ -62,7 +63,7 @@ class OrganoXCompoundClassifier(Classifier):
                 if properties["name"].startswith("organo") and " compound" in properties["name"]:
                     element_name = properties["name"][6:].split(" ")[0]
                     if element_name in element_name_to_num:
-                        element_class_mapping[element_name_to_num[element_name]] = chebi_id
+                        element_class_mapping[element_name_to_num[element_name]] = str(chebi_id)
         return element_class_mapping
 
 if __name__ == "__main__":
