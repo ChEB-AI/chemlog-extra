@@ -15,6 +15,9 @@ class XMolecularEntityClassifier(Classifier):
         if not isinstance(mol_list, list):
             mol_list = [mol_list]
         for mol in mol_list:
+            if not mol:
+                res.append({})
+                continue
             res.append({cls: element_num in list(set([atom.GetAtomicNum() for atom in mol.GetAtoms() if atom.GetAtomicNum() > 0]))
                         for element_num, cls in self.element_class_mapping.items()})
         return res
