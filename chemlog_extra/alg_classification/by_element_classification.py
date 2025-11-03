@@ -1,7 +1,6 @@
 import os
 import csv
 from chemlog.base_classifier import Classifier
-from chemlog.preprocessing.chebi_data import ChEBIData
 from rdkit import Chem
 
 class ExtraClassifier(Classifier):
