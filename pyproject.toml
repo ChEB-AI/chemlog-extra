@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "chemlog-extra"
-version = "0.1.0"
+version = "1.0.0"
 description = "Extension of ChemLog to a broad range of ChEBI classes"
 readme = "README.md"
 license-files = ["LICENSE"]
