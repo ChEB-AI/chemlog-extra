@@ -54,7 +54,9 @@ class XMolecularEntityClassifier(ExtraClassifier):
 
     
     def build_class_element_mapping(self):
-        element_name_to_num = {Chem.GetPeriodicTable().GetElementName(i).lower(): i for i in range(1, 119)}
+        # deliberate skips hydrogen (the current formalisation of atoms in ChemLog does not use explicit hydrogen atoms) 
+        # hydrogen molecular entity can be classified by chemlog's lopster module
+        element_name_to_num = {Chem.GetPeriodicTable().GetElementName(i).lower(): i for i in range(2, 119)}
         element_class_mapping = {}
         for chebi_id, properties in self.chebi_graph.nodes.items():
             if "name" in properties:
@@ -77,7 +79,9 @@ class OrganoXCompoundClassifier(ExtraClassifier):
                                   if any(n.GetAtomicNum() == 6 for n in atom.GetNeighbors())]))
 
     def build_class_element_mapping(self):
-        element_name_to_num = {Chem.GetPeriodicTable().GetElementName(i).lower(): i for i in range(1, 119)}
+        # skip organophophorus compounds - they use a broader definition including C-O-P and C-S-P linkages
+        # organophosphorus compounds can be classified by chemlog's lopster module
+        element_name_to_num = {Chem.GetPeriodicTable().GetElementName(i).lower(): i for i in range(1, 119) if i != 15}
         element_class_mapping = {}
         for chebi_id, properties in self.chebi_graph.nodes.items():
             if "name" in properties:
