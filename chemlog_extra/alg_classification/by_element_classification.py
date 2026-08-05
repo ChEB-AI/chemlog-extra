@@ -59,13 +59,12 @@ class XMolecularEntityClassifier(ExtraClassifier):
         element_name_to_num = {Chem.GetPeriodicTable().GetElementName(i).lower(): i for i in range(2, 119)}
         element_class_mapping = {}
         for chebi_id, properties in self.chebi_graph.nodes.items():
-            if "name" in properties:
-                if " molecular entity" in properties["name"]:
-                    element_name = properties["name"].split(" ")[0]
-                    if element_name == "organic":
-                        element_name = "carbon"
-                    if element_name in element_name_to_num:
-                        element_class_mapping[element_name_to_num[element_name]] = str(chebi_id)
+            if properties.get("name") and " molecular entity" in properties["name"]:
+                element_name = properties["name"].split(" ")[0]
+                if element_name == "organic":
+                    element_name = "carbon"
+                if element_name in element_name_to_num:
+                    element_class_mapping[element_name_to_num[element_name]] = str(chebi_id)
         return element_class_mapping
 
     def get_single_classification(self, mol, element_num):
@@ -84,17 +83,8 @@ class OrganoXCompoundClassifier(ExtraClassifier):
         element_name_to_num = {Chem.GetPeriodicTable().GetElementName(i).lower(): i for i in range(1, 119) if i != 15}
         element_class_mapping = {}
         for chebi_id, properties in self.chebi_graph.nodes.items():
-            if "name" in properties:
-                if properties["name"].startswith("organo") and " compound" in properties["name"]:
-                    element_name = properties["name"][6:].split(" ")[0]
-                    if element_name in element_name_to_num:
-                        element_class_mapping[element_name_to_num[element_name]] = str(chebi_id)
+            if properties.get("name") and properties["name"].startswith("organo") and " compound" in properties["name"]:
+                element_name = properties["name"][6:].split(" ")[0]
+                if element_name in element_name_to_num:
+                    element_class_mapping[element_name_to_num[element_name]] = str(chebi_id)
         return element_class_mapping
-
-if __name__ == "__main__":
-    from chebifier.utils import build_chebi_graph
-    chebi_graph = build_chebi_graph(chebi_version=244)
-    classifier = XMolecularEntityClassifier(chebi_graph, chebi_version=244)
-    print(classifier.classify([Chem.MolFromSmiles("C12=C(N(C(=O)N(C)C1=O)C)N=CN2C.C1(=CC=CC=C1)C(=O)[O-].[Na+]")]))
-    classifier = OrganoXCompoundClassifier(chebi_graph, chebi_version=244)
-    print(classifier.classify([Chem.MolFromSmiles("C12=C(N(C(=O)N(C)C1=O)C)N=CN2C.C1(=CC=CC=C1)C(=O)[O-].[Na+]")]))
